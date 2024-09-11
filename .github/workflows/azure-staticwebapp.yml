@@ -24,7 +24,7 @@ jobs:
         id: azure-keyvault
         uses: Azure/get-keyvault-secrets@v1
         with:
-          keyvault: 'YOUR_KEYVAULT_NAME'
+          keyvault: 'wf-poc-test-kv'
           secrets: 'maskedvariable' 
           azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
 
