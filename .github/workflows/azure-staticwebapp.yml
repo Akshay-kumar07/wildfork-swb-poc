@@ -1,0 +1,39 @@
+name: Azure Static Web Apps CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Fetch secret from Azure Key Vault
+        id: azure-keyvault
+        uses: Azure/get-keyvault-secrets@v1
+        with:
+          keyvault: 'YOUR_KEYVAULT_NAME'
+          secrets: 'SECRET_NAME' 
+          azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Replace secret in HTML
+        run: sed -i "s/SECRET_PLACEHOLDER/${{ steps.azure-keyvault.outputs.SECRET_NAME }}/g" index.html
+
+      - name: Build and deploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          app_location: "/"
+          output_location: "/"
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
