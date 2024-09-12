@@ -22,12 +22,12 @@ jobs:
         uses: azure/get-keyvault-secrets@v1
         with:
           keyvault: 'wf-poc-test-kv'  
-          secrets: 'maskedvariable'          
+          secrets: 'maskedvariable'
 
       - name: Replace Secret in HTML
         run: |
-          echo "Replacing SECRET_PLACEHOLDER with secret value"
-          run: sed -i "s/SECRET_PLACEHOLDER/${{ steps.azure-keyvault.outputs.SECRET_NAME }}/g" index.html
+          echo "Replacing with masked value"
+          sed -i "s/SECRET_PLACEHOLDER/${{ steps.get_secret.outputs.maskedvariable }}/g" index.html
 
       - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
